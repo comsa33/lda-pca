@@ -1,4 +1,4 @@
-from gensim import corpora, models
+from gensim.models import Word2Vec
 from kiwipiepy import Kiwi
 
 import functions as funcs
@@ -38,7 +38,7 @@ class LDA_Model():
         corpus_tfidf = tfidf[corpus]
         return corpus_tfidf 
         
-    def get_lda_model(self, df, company_name, year, col, num_topics, passes):
+    def get_lda_model(self, df, company_name, year, col):
         df_comp = funcs.get_comp(df, company_name)
         df_comp_ = df_comp[[col, 'year']]
         df_year = df_comp_.query(f'year == {year}')
@@ -46,7 +46,5 @@ class LDA_Model():
         df_year['morpheme'] =  df_year[col].apply(morph_analysis)
         doc_list = self.read_documents(df_year, "morpheme")
         print(f"{year} DATA LENGTH :", len(doc_list))
-        corpus, dictionary = self.build_doc_term_mat(doc_list)
-        corpus_tfidf = self.build_corpus_tfidf(corpus)
-        model = models.ldamodel.LdaModel(corpus_tfidf, num_topics=num_topics, id2word=dictionary, alpha=1, passes=passes)
-        return model, corpus, dictionary, doc_list
+        model = Word2Vec(doc_list, window=5, min_count=5, workers=4, sg=0)  
+        return model
