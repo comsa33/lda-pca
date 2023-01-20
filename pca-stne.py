@@ -20,7 +20,7 @@ df = funcs.get_df(coll, 5)
 
 
 filename = ['jp_comp_name_list']
-comp_name_ls = tuple(pickle.load(open(filename[1], 'rb')))
+comp_name_ls = tuple(pickle.load(open(filename[0], 'rb')))
 
 def append_list(sim_words, words):
     
