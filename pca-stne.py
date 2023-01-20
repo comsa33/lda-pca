@@ -303,7 +303,7 @@ else:
     
     for words in user_input:
     
-        sim_words = model.most_similar(words, topn = top_n)
+        sim_words = model.wv.most_similar(words, topn = top_n)
         sim_words = append_list(sim_words, words)
             
         result_word.extend(sim_words)
