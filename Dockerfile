@@ -13,6 +13,9 @@ WORKDIR /usr/src
 RUN apt update -y && apt upgrade -y
 RUN pip install -r requirements.txt
 
+COPY . /usr/src/LDA-PCA
+WORKDIR /usr/src/LDA-PCA/
+
 EXPOSE 8501
 
 CMD ["streamlit", "run", "pca-stne.py"]
