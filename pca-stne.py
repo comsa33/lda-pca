@@ -1,4 +1,3 @@
-import plotly
 import plotly.graph_objs as go
 import numpy as np
 import pickle
@@ -6,6 +5,7 @@ import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
+import functions as funcs
 from Lda import LDA_Model
 import mongodb
 
