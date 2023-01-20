@@ -1,3 +1,4 @@
+import plotly
 import plotly.graph_objs as go
 import numpy as np
 import pickle
@@ -5,7 +6,6 @@ import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
-import functions as funcs
 from Lda import LDA_Model
 import mongodb
 
@@ -20,7 +20,7 @@ df = funcs.get_df(coll, 5)
 
 
 filename = ['jp_comp_name_list']
-comp_name_ls = tuple(pickle.load(open(filename[0], 'rb')))
+comp_name_ls = pickle.load(open(filename[1], 'rb'))
 
 def append_list(sim_words, words):
     
@@ -248,7 +248,7 @@ col = st.sidebar.selectbox(
      ('Pros', 'Cons', 'To_Managements'))
 company_name = st.sidebar.selectbox(
      "Select company name",
-     comp_name_ls)
+     (*comp_name_ls))
 
 lda = LDA_Model()
 model = lda.get_lda_model(df, company_name, year, col)
@@ -295,7 +295,7 @@ else:
     
     for words in user_input:
     
-        sim_words = model.most_similar(words, topn = top_n)
+        sim_words = model.wv.most_similar(words, topn = top_n)
         sim_words = append_list(sim_words, words)
             
         result_word.extend(sim_words)
