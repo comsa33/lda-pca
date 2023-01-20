@@ -1,0 +1,4 @@
+MONGO_HOST = "59.10.38.6"
+MONGO_PORT = 30017
+MONGO_USER = "gravylab1"
+MONGO_PSWD = "ahdrh!0720"
