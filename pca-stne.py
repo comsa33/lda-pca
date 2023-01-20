@@ -269,7 +269,7 @@ annotation = st.sidebar.radio(
 
 if dim_red == 'TSNE':
     perplexity = st.sidebar.slider('Adjust the perplexity. The perplexity is related to the number of nearest neighbors that is used in other manifold learning algorithms. Larger datasets usually require a larger perplexity',
-    5, 50, (30))
+    0, 50, (5))
     
     learning_rate = st.sidebar.slider('Adjust the learning rate',
     10, 1000, (200))
