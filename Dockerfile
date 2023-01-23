@@ -18,4 +18,4 @@ WORKDIR /usr/src/LDA-PCA/
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "pca-stne.py"]
+CMD ["streamlit", "run", "pca-tsne.py"]

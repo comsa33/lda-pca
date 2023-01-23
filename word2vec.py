@@ -10,7 +10,7 @@ kiwi = Kiwi()
 kiwi.prepare()
 
 
-class LDA_Model():
+class Word2VecModel():
 
     def __init__(self):
         '''주요 품사 정의'''
@@ -20,7 +20,7 @@ class LDA_Model():
     '''형태소 분석 결과를 읽어서 주요 품사만 수집한 문서 리스트를 돌려준다.'''
     def read_documents(self, df, col):
         문서리스트 = []
-        for index, row in df.iterrows(): 
+        for index, row in df.iterrows():
             if row[col]:
                 필터링결과 = [(token.form, token.tag) for token in row[col] if token.tag in self.주요품사]
                 필터링결과 = [form+"다" if tag in self.용언품사 else form for form, tag in 필터링결과]
@@ -39,7 +39,7 @@ class LDA_Model():
         corpus_tfidf = tfidf[corpus]
         return corpus_tfidf
 
-    def get_lda_model(self, df, company_name, year, col):
+    def get_w2v_model(self, df, company_name, year, col):
         df_comp = funcs.get_comp(df, company_name)
         df_comp_ = df_comp[[col, 'year']]
         df_year = df_comp_.query(f'year == {year}')

@@ -6,7 +6,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
 import functions as funcs
-from Lda import LDA_Model
+from word2vec import Word2VecModel
 import mongodb
 
 
@@ -258,8 +258,8 @@ df, comp_name_ls = get_df()
 
 @st.experimental_memo
 def get_model(df, company_name, year, col):
-    lda = LDA_Model()
-    model = lda.get_lda_model(df, company_name, year, col)
+    w2v = Word2VecModel()
+    model = w2v.get_w2v_model(df, company_name, year, col)
     return model
 
 
@@ -292,7 +292,11 @@ user_input = st.sidebar.text_input(
 )
 top_n = st.sidebar.slider(
     'Select the amount of words associated with the input words you want to visualize ',
-    5, 100, (15)
+    5, 200, (15)
+)
+sample_n = st.sidebar.slider(
+    'Only if you didn\'t spacify any words of user_input, Select the amount of sample words associated with the input words you want to visualize ',
+    5, 200, (15)
 )
 annotation = st.sidebar.radio(
     "Enable or disable the annotation on the visualization",
@@ -355,11 +359,11 @@ st.markdown('Lastly, you have an option to enable or disable the text annotation
 if dimension == '2D':
     st.header('2D Visualization')
     st.write('For more detail about each point (just in case it is difficult to read the annotation), you can hover around each points to see the words. You can expand the visualization by clicking expand symbol in the top right corner of the visualization.')
-    display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n)
+    display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 else:
     st.header('3D Visualization')
     st.write('For more detail about each point (just in case it is difficult to read the annotation), you can hover around each points to see the words. You can expand the visualization by clicking expand symbol in the top right corner of the visualization.')
-    display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n)
+    display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
 st.header('The Top 5 Most Similar Words for Each Input')
 count = 0
