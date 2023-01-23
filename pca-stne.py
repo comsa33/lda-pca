@@ -10,7 +10,8 @@ from Lda import LDA_Model
 import mongodb
 
 
-if 'db' not in globals():
+@st.cache
+def get_df():
     client = mongodb.client
     db_names = mongodb.db_names
     db = client.get_database(db_names[1])
@@ -21,6 +22,7 @@ if 'db' not in globals():
 
     filename = ['jp_comp_name_list']
     comp_name_ls = tuple(pickle.load(open(filename[0], 'rb')))
+    return df, comp_name_ls
 
 
 def append_list(sim_words, words):
@@ -252,6 +254,16 @@ def display_scatterplot_2D(
     st.plotly_chart(plot_figure)
 
 
+df, comp_name_ls = get_df()
+
+
+@st.cache
+def get_model(df, company_name, year, col):
+    lda = LDA_Model()
+    model = lda.get_lda_model(df, company_name, year, col)
+    return model, comp_name_ls
+
+
 year = st.sidebar.slider(
     'Select year',
     2014, 2022, (2021)
@@ -265,9 +277,7 @@ company_name = st.sidebar.selectbox(
     comp_name_ls
 )
 
-lda = LDA_Model()
-model = lda.get_lda_model(df, company_name, year, col)
-
+model, comp_name_ls = get_model(df, company_name, year, col)
 
 dim_red = st.sidebar.selectbox(
     'Select dimension reduction method',
