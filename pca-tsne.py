@@ -1,4 +1,5 @@
 import plotly.graph_objs as go
+import plotly.express as px
 import numpy as np
 import pickle
 import streamlit as st
@@ -256,13 +257,15 @@ def display_scatterplot_2D(
 df, comp_name_ls = get_df()
 col_dic = {'장점': 'Pros', '단점': 'Cons', '경영진에게': 'To_Management'}
 
+
 @st.experimental_memo
 def get_model(df, company_name, year, col):
     w2v = Word2VecModel()
     model = w2v.get_w2v_model(df, company_name, year, col)
     return model
 
-
+with st.sidebar:
+    st.text('---[데이터 필터]---')
 year = st.sidebar.slider(
     '연도를 선택하세요.',
     2014, 2022, (2021)
@@ -276,100 +279,131 @@ company_name = st.sidebar.selectbox(
     comp_name_ls
 )
 
-model = get_model(df, company_name, year, col_dic[col])
+tab1, tab2 = st.tabs(["PCA & TSNE 분석", "HEATMAP 분석"])
+with tab1:
+    model = get_model(df, company_name, year, col_dic[col])
 
-dim_red = st.sidebar.selectbox(
-    '차원 축소 기법을 선택하세요.',
-    ('PCA', 'TSNE')
-)
-dimension = st.sidebar.selectbox(
-    "시각화 차원을 선택하세요.",
-    ('2D', '3D')
+    with st.sidebar:
+        st.text('\n---[PCA & TSNE 분석]---')
+    dim_red = st.sidebar.selectbox(
+        '차원 축소 기법을 선택하세요.',
+        ('PCA', 'TSNE')
     )
-user_input = st.sidebar.text_input(
-    "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
-    ''
-)
-top_n = st.sidebar.slider(
-    '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
-    5, 200, (15)
-)
-sample_n = st.sidebar.slider(
-    '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
-    5, 200, (15)
-)
-annotation = st.sidebar.radio(
-    "주석을 키고 끌 수 있습니다.",
-    ('On', 'Off')
-)
-
-if dim_red == 'TSNE':
-    perplexity = st.sidebar.slider(
-        'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
-        0, 50, (5)
+    dimension = st.sidebar.selectbox(
+        "시각화 차원을 선택하세요.",
+        ('2D', '3D')
+        )
+    user_input = st.sidebar.text_input(
+        "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
+        ''
+    )
+    top_n = st.sidebar.slider(
+        '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
+        5, 200, (15)
+    )
+    sample_n = st.sidebar.slider(
+        '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
+        5, 200, (15)
+    )
+    annotation = st.sidebar.radio(
+        "주석을 키고 끌 수 있습니다.",
+        ('On', 'Off')
     )
 
-    learning_rate = st.sidebar.slider(
-        'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
-        10, 1000, (200)
+    if dim_red == 'TSNE':
+        perplexity = st.sidebar.slider(
+            'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
+            0, 50, (5)
+        )
+
+        learning_rate = st.sidebar.slider(
+            'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
+            10, 1000, (200)
+        )
+
+        iteration = st.sidebar.slider(
+            'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
+            250, 100000, (1000)
+        )
+
+    else:
+        perplexity = 0
+        learning_rate = 0
+        iteration = 0
+
+    if user_input == '':
+        similar_word = None
+        labels = None
+        color_map = None
+
+    else:
+        user_input = [x.strip() for x in user_input.split(',')]
+        result_word = []
+
+        for words in user_input:
+            sim_words = model.wv.most_similar(words, topn=top_n)
+            sim_words = append_list(sim_words, words)
+            result_word.extend(sim_words)
+
+        similar_word = [word[0] for word in result_word]
+        similarity = [word[1] for word in result_word]
+        similar_word.extend(user_input)
+        labels = [word[2] for word in result_word]
+        label_dict = dict([(y, x+1) for x, y in enumerate(set(labels))])
+        color_map = [label_dict[x] for x in labels]
+
+
+    st.title('[그레이비랩] 코사인 유사도-워드 임베딩 시각화 분석')
+
+    st.header('워드 임베딩 시각화를 위한 웹앱입니다.')
+    st.markdown('먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
+
+    st.markdown("다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
+    st.markdown('그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
+
+    st.markdown('사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
+    st.markdown('마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
+
+    if dimension == '2D':
+        st.header('2D 시각화')
+        st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+        display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
+    else:
+        st.header('3D 시각화')
+        st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+        display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
+
+    st.header('각 입력에 대한 상위 5개의 가장 유사한 단어')
+    count = 0
+    for i in range(len(user_input)):
+        st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
+        horizontal_bar(similar_word[count:count+5], similarity[count:count+5])
+
+        count += top_n
+
+with tab2:
+    with st.sidebar:
+        st.text('\n---[HEATMAP 분석]---')
+    word_n = st.sidebar.slider(
+        '히트맵에 보여줄 단어의 수를 선택하세요.',
+        5, 30, (15)
     )
+    height = word_n * 50
 
-    iteration = st.sidebar.slider(
-        'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
-        250, 100000, (1000)
-    )
+    @st.experimental_memo
+    def display_heatmap(df, company_name, col, word_n):
+        df_join = funcs.get_all_most_common_join_df(df, company_name, col, word_n)
+        plot_figure = px.imshow(
+            df_join.iloc[:, 1:],
+            text_auto=True,
+            aspect="auto",
+            width=1000,
+            height=height,
+            title=f"{year} {company_name} TOP{word_n} 빈출 단어 히트맵"
+        )
+        plot_figure.update_xaxes(side="top")
+        st.plotly_chart(plot_figure)
 
-else:
-    perplexity = 0
-    learning_rate = 0
-    iteration = 0
-
-if user_input == '':
-    similar_word = None
-    labels = None
-    color_map = None
-
-else:
-    user_input = [x.strip() for x in user_input.split(',')]
-    result_word = []
-
-    for words in user_input:
-        sim_words = model.wv.most_similar(words, topn=top_n)
-        sim_words = append_list(sim_words, words)
-        result_word.extend(sim_words)
-
-    similar_word = [word[0] for word in result_word]
-    similarity = [word[1] for word in result_word]
-    similar_word.extend(user_input)
-    labels = [word[2] for word in result_word]
-    label_dict = dict([(y, x+1) for x, y in enumerate(set(labels))])
-    color_map = [label_dict[x] for x in labels]
-
-
-st.title('[그레이비랩] 코사인 유사도-워드 임베딩 시각화 분석')
-
-st.header('워드 임베딩 시각화를 위한 웹앱입니다.')
-st.markdown('먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
-
-st.markdown("다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
-st.markdown('그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
-
-st.markdown('사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
-st.markdown('마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
-
-if dimension == '2D':
-    st.header('2D 시각화')
-    st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
-    display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
-else:
-    st.header('3D 시각화')
-    st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
-    display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
-
-st.header('각 입력에 대한 상위 5개의 가장 유사한 단어')
-count = 0
-for i in range(len(user_input)):
-    st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
-    horizontal_bar(similar_word[count:count+5], similarity[count:count+5])
-
-    count += top_n
+    st.title('[그레이비랩] 히트맵 시각화 분석')
+    st.header('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
+    display_heatmap(df, company_name, col_dic[col], word_n)

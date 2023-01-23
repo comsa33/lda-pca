@@ -11,6 +11,7 @@ COPY requirements.txt /usr/src/
 WORKDIR /usr/src
 
 RUN apt update -y && apt upgrade -y
+RUN apt-get install -y fonts-nanum
 RUN pip install -r requirements.txt
 
 COPY . /usr/src/LDA-PCA
