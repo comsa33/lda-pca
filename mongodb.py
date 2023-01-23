@@ -14,6 +14,7 @@ db_names = {}
 for i, db in enumerate(client.list_databases()):
     db_names[i] = db['name']
 
+
 def get_collections(db_no):
     db = client.get_database(db_names[db_no])
     coll_names = {}

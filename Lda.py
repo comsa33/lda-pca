@@ -10,12 +10,12 @@ kiwi.prepare()
 
 
 class LDA_Model():
-    
+
     def __init__(self):
         '''주요 품사 정의'''
         self.주요품사 = ["NNG", "NNP", "VV", "VA", "XR"]
         self.용언품사 = ["VV", "VA"]
-        
+
     '''형태소 분석 결과를 읽어서 주요 품사만 수집한 문서 리스트를 돌려준다.'''
     def read_documents(self, df, col):
         문서리스트 = []
@@ -37,7 +37,7 @@ class LDA_Model():
         tfidf = models.TfidfModel(corpus)
         corpus_tfidf = tfidf[corpus]
         return corpus_tfidf 
-        
+
     def get_lda_model(self, df, company_name, year, col):
         df_comp = funcs.get_comp(df, company_name)
         df_comp_ = df_comp[[col, 'year']]
@@ -46,5 +46,5 @@ class LDA_Model():
         df_year['morpheme'] =  df_year[col].apply(morph_analysis)
         doc_list = self.read_documents(df_year, "morpheme")
         print(f"{year} DATA LENGTH :", len(doc_list))
-        model = Word2Vec(doc_list, window=5, min_count=5, workers=4, sg=0)  
+        model = Word2Vec(doc_list, window=5, min_count=5, workers=4, sg=0)
         return model

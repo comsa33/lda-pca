@@ -10,16 +10,17 @@ from Lda import LDA_Model
 import mongodb
 
 
-client = mongodb.client
-db_names = mongodb.db_names
-db = client.get_database(db_names[1])
-coll_names = funcs.get_collections(1)
-coll = db[coll_names[5]]
+if 'db' not in globals():
+    client = mongodb.client
+    db_names = mongodb.db_names
+    db = client.get_database(db_names[1])
+    coll_names = funcs.get_collections(1)
+    coll = db[coll_names[5]]
 
-df = funcs.get_df(coll, 5)
+    df = funcs.get_df(coll, 5)
 
-filename = ['jp_comp_name_list']
-comp_name_ls = tuple(pickle.load(open(filename[0], 'rb')))
+    filename = ['jp_comp_name_list']
+    comp_name_ls = tuple(pickle.load(open(filename[0], 'rb')))
 
 
 def append_list(sim_words, words):
@@ -105,7 +106,7 @@ def display_scatterplot_3D(
                     marker={
                         'size': 8,
                         'opacity': 1,
-                        'color': 'black'
+                        'color': 'grey'
                     }
                 )
     data.append(trace_input)
@@ -215,7 +216,7 @@ def display_scatterplot_2D(
                     marker={
                         'size': 8,
                         'opacity': 1,
-                        'color': 'black'
+                        'color': 'grey'
                     }
                 )
     data.append(trace_input)
