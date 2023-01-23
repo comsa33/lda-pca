@@ -254,7 +254,7 @@ def display_scatterplot_2D(
 
 
 df, comp_name_ls = get_df()
-col_dic = {'장점': 'Pros', '단점': 'Cons', '경영진에게': 'To_Managements'}
+col_dic = {'장점': 'Pros', '단점': 'Cons', '경영진에게': 'To_Management'}
 
 @st.experimental_memo
 def get_model(df, company_name, year, col):
