@@ -47,5 +47,5 @@ class LDA_Model():
         df_year['morpheme'] = df_year[col].apply(morph_analysis)
         doc_list = self.read_documents(df_year, "morpheme")
         print(f"{year} DATA LENGTH :", len(doc_list))
-        model = Word2Vec(doc_list, window=5, min_count=5, workers=4, sg=0)
+        model = Word2Vec(doc_list, window=5, min_count=3, workers=4, sg=0)
         return model

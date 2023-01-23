@@ -10,7 +10,7 @@ from Lda import LDA_Model
 import mongodb
 
 
-@st.cache
+@st.experimental_memo
 def get_df():
     client = mongodb.client
     db_names = mongodb.db_names
@@ -93,7 +93,6 @@ def display_scatterplot_3D(
                     }
                 )
         data.append(trace)
-
         count += topn
 
     trace_input = go.Scatter3d(
@@ -205,7 +204,7 @@ def display_scatterplot_2D(
             }
         )
         data.append(trace)
-        count = count+topn
+        count += topn
 
     trace_input = go.Scatter(
                     x=two_dim[count:, 0],
@@ -257,11 +256,11 @@ def display_scatterplot_2D(
 df, comp_name_ls = get_df()
 
 
-@st.cache
+@st.experimental_memo
 def get_model(df, company_name, year, col):
     lda = LDA_Model()
     model = lda.get_lda_model(df, company_name, year, col)
-    return model, comp_name_ls
+    return model
 
 
 year = st.sidebar.slider(
@@ -277,7 +276,7 @@ company_name = st.sidebar.selectbox(
     comp_name_ls
 )
 
-model, comp_name_ls = get_model(df, company_name, year, col)
+model = get_model(df, company_name, year, col)
 
 dim_red = st.sidebar.selectbox(
     'Select dimension reduction method',
