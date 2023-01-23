@@ -254,7 +254,7 @@ def display_scatterplot_2D(
 
 
 df, comp_name_ls = get_df()
-
+col_dic = {'장점': 'Pros', '단점': 'Cons', '경영진에게': 'To_Managements'}
 
 @st.experimental_memo
 def get_model(df, company_name, year, col):
@@ -264,58 +264,58 @@ def get_model(df, company_name, year, col):
 
 
 year = st.sidebar.slider(
-    'Select year',
+    '연도를 선택하세요.',
     2014, 2022, (2021)
 )
 col = st.sidebar.selectbox(
-    "Select feature",
-    ('Pros', 'Cons', 'To_Managements')
+    "분석 텍스트 필드를 선택하세요.",
+    ('장점', '단점', '경영진에게')
 )
 company_name = st.sidebar.selectbox(
-    "Select company name",
+    "회사명을 입력/선택하세요.",
     comp_name_ls
 )
 
-model = get_model(df, company_name, year, col)
+model = get_model(df, company_name, year, col_dic[col])
 
 dim_red = st.sidebar.selectbox(
-    'Select dimension reduction method',
+    '차원 축소 기법을 선택하세요.',
     ('PCA', 'TSNE')
 )
 dimension = st.sidebar.selectbox(
-    "Select the dimension of the visualization",
+    "시각화 차원을 선택하세요.",
     ('2D', '3D')
     )
 user_input = st.sidebar.text_input(
-    "Type the word that you want to investigate. You can type more than one word by separating one word with other with comma (,)",
+    "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
     ''
 )
 top_n = st.sidebar.slider(
-    'Select the amount of words associated with the input words you want to visualize ',
+    '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
     5, 200, (15)
 )
 sample_n = st.sidebar.slider(
-    'Only if you didn\'t spacify any words of user_input, Select the amount of sample words associated with the input words you want to visualize ',
+    '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
     5, 200, (15)
 )
 annotation = st.sidebar.radio(
-    "Enable or disable the annotation on the visualization",
+    "주석을 키고 끌 수 있습니다.",
     ('On', 'Off')
 )
 
 if dim_red == 'TSNE':
     perplexity = st.sidebar.slider(
-        'Adjust the perplexity. The perplexity is related to the number of nearest neighbors that is used in other manifold learning algorithms. Larger datasets usually require a larger perplexity',
+        'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
         0, 50, (5)
     )
 
     learning_rate = st.sidebar.slider(
-        'Adjust the learning rate',
+        'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
         10, 1000, (200)
     )
 
     iteration = st.sidebar.slider(
-        'Adjust the number of iteration',
+        'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
         250, 100000, (1000)
     )
 
@@ -346,29 +346,30 @@ else:
     color_map = [label_dict[x] for x in labels]
 
 
-st.title('Word Embedding Visualization Based on Cosine Similarity')
+st.title('[그레이비랩] 코사인 유사도-워드 임베딩 시각화 분석')
 
-st.header('This is a web app to visualize the word embedding.')
-st.markdown('First, choose which dimension of visualization that you want to see. There are two options: 2D and 3D.')
+st.header('워드 임베딩 시각화를 위한 웹앱입니다.')
+st.markdown('먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
 
-st.markdown('Next, type the word that you want to investigate. You can type more than one word by separating one word with other with comma (,).')
+st.markdown("다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
+st.markdown('그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
 
-st.markdown('With the slider in the sidebar, you can pick the amount of words associated with the input word you want to visualize. This is done by computing the cosine similarity between vectors of words in embedding space.')
-st.markdown('Lastly, you have an option to enable or disable the text annotation in the visualization.')
+st.markdown('사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
+st.markdown('마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
 
 if dimension == '2D':
-    st.header('2D Visualization')
-    st.write('For more detail about each point (just in case it is difficult to read the annotation), you can hover around each points to see the words. You can expand the visualization by clicking expand symbol in the top right corner of the visualization.')
+    st.header('2D 시각화')
+    st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
     display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 else:
-    st.header('3D Visualization')
-    st.write('For more detail about each point (just in case it is difficult to read the annotation), you can hover around each points to see the words. You can expand the visualization by clicking expand symbol in the top right corner of the visualization.')
+    st.header('3D 시각화')
+    st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
     display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
-st.header('The Top 5 Most Similar Words for Each Input')
+st.header('각 입력에 대한 상위 5개의 가장 유사한 단어')
 count = 0
 for i in range(len(user_input)):
-    st.write('The most similar words from '+str(user_input[i])+' are:')
+    st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
     horizontal_bar(similar_word[count:count+5], similarity[count:count+5])
 
     count += top_n
