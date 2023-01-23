@@ -5,9 +5,11 @@ import pickle
 import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
+import pyLDAvis.gensim_models
 
 import functions as funcs
 from word2vec import Word2VecModel
+from lda import LDA_Model
 import mongodb
 
 
@@ -279,7 +281,7 @@ company_name = st.sidebar.selectbox(
     comp_name_ls
 )
 
-tab1, tab2 = st.tabs(["PCA & TSNE 분석", "HEATMAP 분석"])
+tab1, tab2, tab3 = st.tabs(["PCA & TSNE 분석", "LDA 분석", "HEATMAP 분석"])
 with tab1:
     model = get_model(df, company_name, year, col_dic[col])
 
@@ -382,6 +384,28 @@ with tab1:
         count += top_n
 
 with tab2:
+    with st.sidebar:
+        st.text('\n---[LDA 토픽모델링 분석]---')
+    num_topics = st.sidebar.slider(
+        '토픽의 수를 설정하세요.',
+        3, 10, (5)
+    )
+    passes = st.sidebar.slider(
+        'LDA모델 훈련 횟수를 설정하세요.',
+        1, 100, (50)
+    )
+    lda = LDA_Model()
+    lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
+
+    st.title('[그레이비랩] LDA 시각화 분석')
+    st.header('문서 내 토픽 모델링 시각화를 위한 웹앱입니다.')
+
+    vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
+    st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
+    html_string = pyLDAvis.prepared_data_to_html(vis)
+    st.components.v1.html(html_string, width=1300, height=800, scrolling=True)
+
+with tab3:
     with st.sidebar:
         st.text('\n---[HEATMAP 분석]---')
     word_n = st.sidebar.slider(

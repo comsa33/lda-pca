@@ -13,6 +13,8 @@ dnspython==2.3.0
 entrypoints==0.4
 fonttools==4.38.0
 fst-pso==1.8.1
+funcy==1.17
+future==0.18.3
 FuzzyTM==2.0.5
 gensim==4.3.0
 gitdb==4.0.10
@@ -30,6 +32,7 @@ MarkupSafe==2.1.2
 matplotlib==3.6.3
 mdurl==0.1.2
 miniful==0.0.6
+numexpr==2.8.4
 numpy==1.24.1
 packaging==23.0
 pandas==1.5.3
@@ -40,6 +43,7 @@ pyarrow==10.0.1
 pydeck==0.8.0
 pyFUME==0.2.25
 Pygments==2.14.0
+pyLDAvis==3.3.1
 pymongo==4.3.3
 Pympler==1.0.1
 pyparsing==3.0.9
@@ -55,6 +59,7 @@ seaborn==0.12.2
 semver==2.13.0
 simpful==2.9.0
 six==1.16.0
+sklearn==0.0.post1
 smart-open==6.3.0
 smmap==5.0.0
 streamlit==1.17.0
