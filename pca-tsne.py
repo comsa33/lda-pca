@@ -294,7 +294,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["PCA & TSNE 분석", "LDA 분석", "HEATMAP �
 
 with tab1:
     st.subheader('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
-    with st.expander():
+    with st.expander("가이드 펼쳐보기"):
         st.markdown(
             """
 >  1. 먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.
