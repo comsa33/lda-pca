@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import functions as funcs
 from word2vec import Word2VecModel
@@ -443,17 +444,27 @@ with tab4:
     df_comp = funcs.get_comp(df, company_name)
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
     fields2 = ['Potential', 'Recommend']
+    field_dic = {
+        'Ratings': '전체 평점',
+        'Culture': '사내 문화',
+        'WorkLifeBalance': '워라벨',
+        'Benefits': '복지/복리후생',
+        'Management': '경영진',
+        'Opportunity': '승진/발전 기회',
+        'Potential': '회사 발전가능성',
+        'Recommend': '추천 여부'
+    }
 
     for field in fields:
         years, trends = funcs.get_fluctuation(df_comp, field)
         fig1 = plt.figure(figsize=(7, 2))
         sns.barplot(x=years, y=trends, palette='crest')
-        plt.title(f'[{field}] annual trends')
+        plt.title(f'[{field_dic[field]}] 연도별 트렌드')
         st.pyplot(fig1)
 
     for field in fields2:
         years, trends = funcs.get_fluctuation2(df_comp, field)
         fig2 = plt.figure(figsize=(7, 2))
         sns.barplot(x=years, y=trends, palette='flare')
-        plt.title(f'[{field}] annual trends')
+        plt.title(f'[{field_dic[field]}] 연도별 트렌드')
         st.pyplot(fig2)
