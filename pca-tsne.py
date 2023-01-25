@@ -7,6 +7,7 @@ import pyLDAvis.gensim_models
 import plotly.graph_objs as go
 import plotly.express as px
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 import functions as funcs
 from word2vec import Word2VecModel
