@@ -93,14 +93,14 @@ def draw_fluctuation(df, company_name):
 
     for field in fields:
         years, trends = get_fluctuation(df_comp, field)
-        plt.figure(figsize=(7, 2))
-        fig1 = sns.barplot(x=years, y=trends, palette='crest')
+        fig1 = plt.figure(figsize=(7, 2))
+        sns.barplot(x=years, y=trends, palette='crest')
         plt.title(f'[{field}] annual trends')
 
     for field in fields2:
         years, trends = get_fluctuation2(df_comp, field)
-        plt.figure(figsize=(7, 2))
-        fig2 = sns.barplot(x=years, y=trends, palette='flare')
+        fig2 = plt.figure(figsize=(7, 2))
+        sns.barplot(x=years, y=trends, palette='flare')
         plt.title(f'[{field}] annual trends')
     return fig1, fig2
 
