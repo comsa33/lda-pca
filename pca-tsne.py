@@ -365,25 +365,25 @@ with tab1:
         color_map = [label_dict[x] for x in labels]
 
 
-    st.header('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
-    st.markdown('먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
+    st.subheader('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
+    st.markdown('>  1. 먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
 
-    st.markdown("다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
-    st.markdown('그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
+    st.markdown(">  2. 다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
+    st.markdown('>  3. 그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
 
-    st.markdown('사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
-    st.markdown('마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
+    st.markdown('>  4. 사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
+    st.markdown('>  5. 마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
 
     if dimension == '2D':
-        st.header('2D 시각화')
-        st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+        st.subheader('2D 시각화')
+        st.write('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
         display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
     else:
-        st.header('3D 시각화')
-        st.write('각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+        st.subheader('3D 시각화')
+        st.write('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
         display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
-    st.header('각 입력에 대한 상위 5개의 가장 유사한 단어')
+    st.subheader('각 입력에 대한 상위 5개의 가장 유사한 단어')
     count = 0
     for i in range(len(user_input)):
         st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
@@ -405,7 +405,7 @@ with tab2:
     lda = LDA_Model()
     lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
 
-    st.header('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
+    st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
 
     vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
     st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
@@ -435,11 +435,11 @@ with tab3:
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
 
-    st.header('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
+    st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
     display_heatmap(df, company_name, col_dic[col], word_n)
 
 with tab4:
-    st.header('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
+    st.subheader('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
 
     df_comp = funcs.get_comp(df, company_name)
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
@@ -456,15 +456,17 @@ with tab4:
     }
 
     for field in fields:
-        years, trends = funcs.get_fluctuation(df_comp, field)
-        fig1 = plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='crest')
-        plt.title(f'[{field_dic[field]}] 연도별 트렌드')
-        st.pyplot(fig1)
+        with st.container():
+            st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+            years, trends = funcs.get_fluctuation(df_comp, field)
+            fig1 = plt.figure(figsize=(7, 2))
+            sns.barplot(x=years, y=trends, palette='crest')
+            st.pyplot(fig1)
 
     for field in fields2:
-        years, trends = funcs.get_fluctuation2(df_comp, field)
-        fig2 = plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='flare')
-        plt.title(f'[{field_dic[field]}] 연도별 트렌드')
-        st.pyplot(fig2)
+        with st.container():
+            st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+            years, trends = funcs.get_fluctuation2(df_comp, field)
+            fig2 = plt.figure(figsize=(7, 2))
+            sns.barplot(x=years, y=trends, palette='flare')
+            st.pyplot(fig2)
