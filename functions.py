@@ -154,4 +154,3 @@ def draw_heatmap_most_common(df, company_name, col, n):
     ax.xaxis.tick_top()
     plt.title(f"{company_name} {col} TOP WORDS {n}")
     plt.show()
-    
