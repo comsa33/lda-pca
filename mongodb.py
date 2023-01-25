@@ -7,7 +7,7 @@ mongo_port = settings.MONGO_PORT
 mongo_user = settings.MONGO_USER
 mongo_pswd = settings.MONGO_PSWD
 
-uri = f"mongodb://{mongo_user}:{mongo_pswd}@{mongo_host}:{mongo_port}/?authMechanism=DEFAULT"
+uri = f"mongodb://{mongo_user}:{mongo_pswd}@{mongo_host}:{mongo_port}/?unicode_decode_error_handler=ignore"
 client = MongoClient(uri)
 
 db_names = {}
