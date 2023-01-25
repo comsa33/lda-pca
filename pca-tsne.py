@@ -293,55 +293,63 @@ st.title('[그레이비랩 기업부설 연구소 / AI lab.]')
 tab1, tab2, tab3, tab4 = st.tabs(["PCA & TSNE 분석", "LDA 분석", "HEATMAP 분석", "평점 트렌드 분석"])
 
 with tab1:
+    st.subheader('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
+    st.markdown('>  1. 먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
+
+    st.markdown(">  2. 다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
+    st.markdown('>  3. 그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
+
+    st.markdown('>  4. 사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
+    st.markdown('>  5. 마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
+    
     model = get_model(df, company_name, year, col_dic[col])
 
-    with st.sidebar:
-        st.text('\n---[PCA & TSNE 분석]---')
-    dim_red = st.sidebar.selectbox(
-        '차원 축소 기법을 선택하세요.',
-        ('PCA', 'TSNE')
-    )
-    dimension = st.sidebar.selectbox(
-        "시각화 차원을 선택하세요.",
-        ('2D', '3D')
+    with st.container():
+        dim_red = st.selectbox(
+            '차원 축소 기법을 선택하세요.',
+            ('PCA', 'TSNE')
         )
-    user_input = st.sidebar.text_input(
-        "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
-        ''
-    )
-    top_n = st.sidebar.slider(
-        '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
-        5, 200, (15)
-    )
-    sample_n = st.sidebar.slider(
-        '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
-        5, 200, (15)
-    )
-    annotation = st.sidebar.radio(
-        "주석을 키고 끌 수 있습니다.",
-        ('On', 'Off')
-    )
-
-    if dim_red == 'TSNE':
-        perplexity = st.sidebar.slider(
-            'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
-            0, 50, (5)
+        dimension = st.selectbox(
+            "시각화 차원을 선택하세요.",
+            ('2D', '3D')
+            )
+        user_input = st.text_input(
+            "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
+            ''
         )
-
-        learning_rate = st.sidebar.slider(
-            'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
-            10, 1000, (200)
+        top_n = st.slider(
+            '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
+            5, 200, (15)
         )
-
-        iteration = st.sidebar.slider(
-            'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
-            250, 100000, (1000)
+        sample_n = st.slider(
+            '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
+            5, 200, (15)
         )
+        annotation = st.radio(
+            "주석을 키고 끌 수 있습니다.",
+            ('On', 'Off')
+        )
+    with container():
+        if dim_red == 'TSNE':
+            perplexity = st.slider(
+                'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
+                0, 50, (5)
+            )
 
-    else:
-        perplexity = 0
-        learning_rate = 0
-        iteration = 0
+            learning_rate = st.slider(
+                'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
+                10, 1000, (200)
+            )
+
+            iteration = st.slider(
+                'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
+                250, 100000, (1000)
+            )
+
+        else:
+            perplexity = 0
+            learning_rate = 0
+            iteration = 0
 
     if user_input == '':
         similar_word = None
@@ -364,62 +372,53 @@ with tab1:
         label_dict = dict([(y, x+1) for x, y in enumerate(set(labels))])
         color_map = [label_dict[x] for x in labels]
 
+    with container():
+        if dimension == '2D':
+            st.subheader('2D 시각화')
+            st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+            display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
+        else:
+            st.subheader('3D 시각화')
+            st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
+            display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
-    st.subheader('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
-    st.markdown('>  1. 먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
+    with container():
+        st.subheader('각 입력에 대한 상위 5개의 가장 유사한 단어')
+        count = 0
+        for i in range(len(user_input)):
+            st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
+            horizontal_bar(similar_word[count:count+5], similarity[count:count+5])
 
-    st.markdown(">  2. 다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
-    st.markdown('>  3. 그 다음, 분석할 단어를 입력합니다. 한 단어와 다른 단어를 쉼표(,)로 구분하여 두 개 이상의 단어를 입력할 수 있습니다.')
-
-    st.markdown('>  4. 사이드바의 슬라이더를 사용하여 시각화하려는 입력 단어와 관련된 단어의 양을 선택할 수 있습니다. 이는 임베딩 공간에서 단어 벡터 간의 코사인 유사성을 계산하여 수행됩니다.')
-    st.markdown('>  5. 마지막으로 시각화에서 텍스트 주석을 활성화하거나 비활성화하는 옵션이 있습니다.')
-
-    if dimension == '2D':
-        st.subheader('2D 시각화')
-        st.write('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
-        display_scatterplot_2D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
-    else:
-        st.subheader('3D 시각화')
-        st.write('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
-        display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
-
-    st.subheader('각 입력에 대한 상위 5개의 가장 유사한 단어')
-    count = 0
-    for i in range(len(user_input)):
-        st.write(str(user_input[i])+'과 가장 유사한 단어는 아래와 같습니다.')
-        horizontal_bar(similar_word[count:count+5], similarity[count:count+5])
-
-        count += top_n
+            count += top_n
 
 with tab2:
-    with st.sidebar:
-        st.text('\n---[LDA 토픽모델링 분석]---')
-    num_topics = st.sidebar.slider(
-        '토픽의 수를 설정하세요.',
-        3, 10, (5)
-    )
-    passes = st.sidebar.slider(
-        'LDA모델 훈련 횟수를 설정하세요.',
-        1, 100, (50)
-    )
+    st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
+    with container():
+        num_topics = st.slider(
+            '토픽의 수를 설정하세요.',
+            3, 10, (5)
+        )
+        passes = st.slider(
+            'LDA모델 훈련 횟수를 설정하세요.',
+            1, 100, (50)
+        )
     lda = LDA_Model()
     lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
 
-    st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
-
-    vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
-    st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
-    html_string = pyLDAvis.prepared_data_to_html(vis)
-    st.components.v1.html(html_string, width=1300, height=800, scrolling=True)
+    with container():
+        vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
+        st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
+        html_string = pyLDAvis.prepared_data_to_html(vis)
+        st.components.v1.html(html_string, width=1300, height=800, scrolling=True)
 
 with tab3:
-    with st.sidebar:
-        st.text('\n---[HEATMAP 분석]---')
-    word_n = st.sidebar.slider(
-        '히트맵에 보여줄 단어의 수를 선택하세요.',
-        5, 30, (15)
-    )
-    height = word_n * 50
+    st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
+    with container():
+        word_n = st.slider(
+            '히트맵에 보여줄 단어의 수를 선택하세요.',
+            5, 30, (15)
+        )
+        height = word_n * 50
 
     @st.experimental_memo
     def display_heatmap(df, company_name, col, word_n):
@@ -434,13 +433,13 @@ with tab3:
         )
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
-
-    st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
-    display_heatmap(df, company_name, col_dic[col], word_n)
+    
+    with container():
+        display_heatmap(df, company_name, col_dic[col], word_n)
 
 with tab4:
     st.subheader('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
-    st.markdown(f'### {comp_name}')
+    st.markdown(f'### {company_name}')
     df_comp = funcs.get_comp(df, company_name)
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
     fields2 = ['Potential', 'Recommend']
