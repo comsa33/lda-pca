@@ -327,7 +327,7 @@ with tab1:
             "주석을 키고 끌 수 있습니다.",
             ('On', 'Off')
         )
-    with container():
+    with st.container():
         if dim_red == 'TSNE':
             perplexity = st.slider(
                 'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
@@ -370,7 +370,7 @@ with tab1:
         label_dict = dict([(y, x+1) for x, y in enumerate(set(labels))])
         color_map = [label_dict[x] for x in labels]
 
-    with container():
+    with st.container():
         if dimension == '2D':
             st.subheader('2D 시각화')
             st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
@@ -380,7 +380,7 @@ with tab1:
             st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
             display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
-    with container():
+    with st.container():
         st.subheader('각 입력에 대한 상위 5개의 가장 유사한 단어')
         count = 0
         for i in range(len(user_input)):
@@ -391,7 +391,7 @@ with tab1:
 
 with tab2:
     st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
-    with container():
+    with st.container():
         num_topics = st.slider(
             '토픽의 수를 설정하세요.',
             3, 10, (5)
@@ -403,7 +403,7 @@ with tab2:
     lda = LDA_Model()
     lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
 
-    with container():
+    with st.container():
         vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
         st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
         html_string = pyLDAvis.prepared_data_to_html(vis)
@@ -411,7 +411,7 @@ with tab2:
 
 with tab3:
     st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
-    with container():
+    with st.container():
         word_n = st.slider(
             '히트맵에 보여줄 단어의 수를 선택하세요.',
             5, 30, (15)
@@ -431,8 +431,8 @@ with tab3:
         )
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
-    
-    with container():
+
+    with st.container():
         display_heatmap(df, company_name, col_dic[col], word_n)
 
 with tab4:
