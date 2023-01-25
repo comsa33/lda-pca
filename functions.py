@@ -86,24 +86,6 @@ def get_fluctuation(df, field):
         trends.append(get_mean(df, year, field))
     return years, trends
 
-def draw_fluctuation(df, company_name):
-    df_comp = get_comp(df, company_name)
-    fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
-    fields2 = ['Potential', 'Recommend']
-
-    for field in fields:
-        years, trends = get_fluctuation(df_comp, field)
-        fig1 = plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='crest')
-        plt.title(f'[{field}] annual trends')
-
-    for field in fields2:
-        years, trends = get_fluctuation2(df_comp, field)
-        fig2 = plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='flare')
-        plt.title(f'[{field}] annual trends')
-    return fig1, fig2
-
 main_words = ["NNG", "NNP", "VV", "VA", "XR"]
 sub_words = ["VV", "VA"]
 

@@ -433,6 +433,21 @@ with tab3:
 
 with tab4:
     st.header('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
-    fig1, fig2 = funcs.draw_fluctuation(df, company_name)
-    st.pyplot(fig1)
-    st.pyplot(fig2)
+
+    df_comp = funcs.get_comp(df, company_name)
+    fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
+    fields2 = ['Potential', 'Recommend']
+
+    for field in fields:
+        years, trends = funcs.get_fluctuation(df_comp, field)
+        fig1 = plt.figure(figsize=(7, 2))
+        sns.barplot(x=years, y=trends, palette='crest')
+        plt.title(f'[{field}] annual trends')
+        st.pyplot(fig1)
+
+    for field in fields2:
+        years, trends = funcs.get_fluctuation2(df_comp, field)
+        fig2 = plt.figure(figsize=(7, 2))
+        sns.barplot(x=years, y=trends, palette='flare')
+        plt.title(f'[{field}] annual trends')
+        st.pyplot(fig2)
