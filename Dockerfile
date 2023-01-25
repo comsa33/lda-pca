@@ -10,7 +10,7 @@ COPY requirements.txt /usr/src/
 
 WORKDIR /usr/src
 
-RUN apt update -y && apt upgrade -y
+RUN apt-get update -y && apt-get upgrade -y
 RUN pip install -r requirements.txt
 
 COPY . /usr/src/LDA-PCA
