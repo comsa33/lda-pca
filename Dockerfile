@@ -11,6 +11,10 @@ COPY requirements.txt /usr/src/
 WORKDIR /usr/src
 
 RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install fontconfig && apt-get install unzip
+RUN curl -o nanumfont.zip http://cdn.naver.com/naver/NanumFont/fontfiles/NanumFont_TTF_ALL.zip 
+RUN unzip -d /usr/share/fonts/nanum nanumfont.zip
+RUN fc-cache -f -v
 RUN pip install -r requirements.txt
 
 COPY . /usr/src/LDA-PCA

@@ -1,16 +1,21 @@
-import plotly.graph_objs as go
-import plotly.express as px
 import numpy as np
 import pickle
 import streamlit as st
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import pyLDAvis.gensim_models
+import plotly.graph_objs as go
+import plotly.express as px
+import matplotlib as mpl
 
 import functions as funcs
 from word2vec import Word2VecModel
 from lda import LDA_Model
 import mongodb
+
+
+mpl.rcParams['axes.unicode_minus'] = False
+plt.rcParams["font.family"] = 'NanumGothic'
 
 
 @st.experimental_memo
