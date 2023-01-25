@@ -281,7 +281,10 @@ company_name = st.sidebar.selectbox(
     comp_name_ls
 )
 
-tab1, tab2, tab3 = st.tabs(["PCA & TSNE 분석", "LDA 분석", "HEATMAP 분석"])
+st.title('[그레이비랩 기업부설 연구소 / AI lab.]')
+
+tab1, tab2, tab3, tab4 = st.tabs(["PCA & TSNE 분석", "LDA 분석", "HEATMAP 분석", "평점 트렌드 분석"])
+
 with tab1:
     model = get_model(df, company_name, year, col_dic[col])
 
@@ -355,9 +358,7 @@ with tab1:
         color_map = [label_dict[x] for x in labels]
 
 
-    st.title('[그레이비랩] 코사인 유사도-워드 임베딩 시각화 분석')
-
-    st.header('워드 임베딩 시각화를 위한 웹앱입니다.')
+    st.header('PCA & STNE 분석 시각화를 위한 웹앱입니다.')
     st.markdown('먼저 보고 싶은 시각화 분석 차원 축소 기법과 차원을 선택합니다. 차원 축소 기법은 PCA와 TSNE가 있습니다. 차원은 2D와 3D의 두 가지 옵션이 있습니다.')
 
     st.markdown("다음으로 분석할 연도, 회사, 필드('장점', '단점', '경영진에게')를 입력하세요.")
@@ -397,13 +398,12 @@ with tab2:
     lda = LDA_Model()
     lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
 
-    st.title('[그레이비랩] LDA 시각화 분석')
-    st.header('문서 내 토픽 모델링 시각화를 위한 웹앱입니다.')
+    st.header('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
 
     vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
     st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
     html_string = pyLDAvis.prepared_data_to_html(vis)
-    st.components.v1.html(html_string, width=1300, height=800, scrolling=True)
+    st.components.v1.html(html_string, width=1000, height=800, scrolling=True)
 
 with tab3:
     with st.sidebar:
@@ -428,6 +428,11 @@ with tab3:
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
 
-    st.title('[그레이비랩] 히트맵 시각화 분석')
     st.header('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
     display_heatmap(df, company_name, col_dic[col], word_n)
+
+with tab4:
+    st.header('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
+    fig1, fig2 = funcs.draw_fluctuation(df, company_name)
+    st.pyplot(fig1)
+    st.pyplot(fig2)

@@ -91,20 +91,18 @@ def draw_fluctuation(df, company_name):
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
     fields2 = ['Potential', 'Recommend']
 
-    print(company_name)
     for field in fields:
         years, trends = get_fluctuation(df_comp, field)
         plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='crest')
+        fig1 = sns.barplot(x=years, y=trends, palette='crest')
         plt.title(f'[{field}] annual trends')
-        plt.show()
 
     for field in fields2:
         years, trends = get_fluctuation2(df_comp, field)
         plt.figure(figsize=(7, 2))
-        sns.barplot(x=years, y=trends, palette='flare')
+        fig2 = sns.barplot(x=years, y=trends, palette='flare')
         plt.title(f'[{field}] annual trends')
-        plt.show()
+    return fig1, fig2
 
 main_words = ["NNG", "NNP", "VV", "VA", "XR"]
 sub_words = ["VV", "VA"]
