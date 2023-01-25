@@ -410,7 +410,7 @@ with tab2:
     vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
     st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
     html_string = pyLDAvis.prepared_data_to_html(vis)
-    st.components.v1.html(html_string, width=1000, height=800, scrolling=True)
+    st.components.v1.html(html_string, width=1300, height=800, scrolling=True)
 
 with tab3:
     with st.sidebar:
@@ -440,7 +440,7 @@ with tab3:
 
 with tab4:
     st.subheader('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
-
+    st.markdown(f'### {comp_name}')
     df_comp = funcs.get_comp(df, company_name)
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
     fields2 = ['Potential', 'Recommend']
