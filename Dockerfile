@@ -11,7 +11,7 @@ COPY requirements.txt /usr/src/
 WORKDIR /usr/src
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y fontconfig && apt-get install -y unzip
+RUN apt-get install -y fontconfig && apt-get install -y unzip && apt-get install -y curl
 RUN curl -o nanumfont.zip http://cdn.naver.com/naver/NanumFont/fontfiles/NanumFont_TTF_ALL.zip 
 RUN unzip -d /usr/share/fonts/nanum nanumfont.zip
 RUN fc-cache -f -v
