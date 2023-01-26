@@ -433,7 +433,7 @@ with tab3:
         st.plotly_chart(plot_figure)
 
     with col2_tab3:
-        st.markdown(=f"**{year} {company_name} 연도별 TOP{word_n} 빈출 단어 히트맵**")
+        st.markdown(f"**{year} {company_name} 연도별 TOP{word_n} 빈출 단어 히트맵**")
         display_heatmap(df, company_name, col_dic[col], word_n)
 
 with tab4:
