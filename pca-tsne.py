@@ -307,48 +307,48 @@ with tab1:
     
     model = get_model(df, company_name, year, col_dic[col])
 
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
+    col1_tab1, col2_tab1, col3_tab1, col4_tab1 = st.columns(4)
+    with col1_tab1:
         dim_red = st.selectbox(
-            '차원 축소 기법을 선택하세요.',
+            '⁜ 차원 축소 기법을 선택하세요.',
             ('PCA', 'TSNE')
         )
         dimension = st.selectbox(
-            "시각화 차원을 선택하세요.",
+            "⁜ 시각화 차원을 선택하세요.",
             ('2D', '3D')
             )
-    with col2:
+    with col2_tab1:
         user_input = st.text_input(
-            "분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
+            "⁜ 분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
             ''
         )
         top_n = st.slider(
-            '입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
+            '⁜ 입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
             5, 200, (15)
         )
-    with col3:
+    with col3_tab1:
         sample_n = st.slider(
-            '어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
+            '⁜ 어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
             5, 200, (15)
         )
         annotation = st.radio(
-            "주석을 키고 끌 수 있습니다.",
+            "⁜ 주석을 키고 끌 수 있습니다.",
             ('On', 'Off')
         )
-    with col4:
+    with col4_tab1:
         if dim_red == 'TSNE':
             perplexity = st.slider(
-                'TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
+                '⁜ TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
                 0, 50, (5)
             )
 
             learning_rate = st.slider(
-                'TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
+                '⁜ TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
                 10, 1000, (200)
             )
 
             iteration = st.slider(
-                'TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
+                '⁜ TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
                 250, 100000, (1000)
             )
         else:
@@ -395,13 +395,15 @@ with tab1:
 
 with tab2:
     st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
-    with st.container():
+    col1_tab2, col2_tab2 = st.columns(2)
+    with col1_tab2:
         num_topics = st.slider(
-            '토픽의 수를 설정하세요.',
+            '⁜ 토픽의 수를 설정하세요.',
             3, 10, (5)
         )
+    with col2_tab2:
         passes = st.slider(
-            'LDA모델 훈련 횟수를 설정하세요.',
+            '⁜ LDA모델 훈련 횟수를 설정하세요.',
             1, 100, (50)
         )
     lda = LDA_Model()
@@ -431,7 +433,7 @@ with tab3:
             aspect="auto",
             width=1000,
             height=height,
-            title=f"{year} {company_name} TOP{word_n} 빈출 단어 히트맵"
+            title=f"{year} {company_name} 연도별 TOP{word_n} 빈출 단어 히트맵"
         )
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
@@ -456,18 +458,33 @@ with tab4:
         'Recommend': '추천 여부'
     }
 
-    for field in fields:
+    cols1_tab4 = st.columns(2)
+    cols2_tab4 = st.columns(2)
+    cols3_tab4 = st.columns(2)
+    for i, field in enumerate(fields):
         with st.container():
-            st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
             years, trends = funcs.get_fluctuation(df_comp, field)
             fig1 = plt.figure(figsize=(7, 2))
             sns.barplot(x=years, y=trends, palette='crest')
-            st.pyplot(fig1)
-
-    for field in fields2:
+            if i < 2:
+                with cols1_tab4[i]:
+                    st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+                    st.pyplot(fig1)
+            elif i > 1 and i < 4:
+                with cols2_tab4[i-2]:
+                    st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+                    st.pyplot(fig1)
+            elif i > 3:
+                with cols3_tab4[i-4]:
+                    st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+                    st.pyplot(fig1)
+    
+    cols4_tab4 = st.columns(2)
+    for i, field in enumerate(fields2):
         with st.container():
-            st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
             years, trends = funcs.get_fluctuation2(df_comp, field)
             fig2 = plt.figure(figsize=(7, 2))
             sns.barplot(x=years, y=trends, palette='flare')
-            st.pyplot(fig2)
+            with cols4_tab4[i]:
+                st.markdown(f'[{field_dic[field]}] 연도별 트렌드')
+                st.pyplot(fig2)
