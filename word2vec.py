@@ -6,7 +6,7 @@ import functions as funcs
 import preprocess as prep
 
 
-prep.user_dictionary()
+prep.make_user_dictionary()
 kiwi = Kiwi()
 kiwi.load_user_dictionary('user_dictionary.txt')
 kiwi.prepare()

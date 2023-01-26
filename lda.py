@@ -2,10 +2,12 @@ from gensim import models, corpora
 from kiwipiepy import Kiwi
 
 import functions as funcs
+import preprocess as prep
 
 
+prep.make_user_dictionary()
 kiwi = Kiwi()
-# kiwi.load_user_dictionary('user_dictionary.txt')
+kiwi.load_user_dictionary('user_dictionary.txt')
 kiwi.prepare()
 
 
@@ -42,10 +44,10 @@ class LDA_Model():
         df_comp = funcs.get_comp(df, company_name)
         df_comp_ = df_comp[[col, 'year']]
         df_year = df_comp_.query(f'year == {year}')
+        df_year[col] = df_year[col].apply(prep.preprocess_text)
         morph_analysis = lambda x: kiwi.tokenize(x) if type(x) is str else None
         df_year['morpheme'] =  df_year[col].apply(morph_analysis)
         doc_list = self.read_documents(df_year, "morpheme")
-        print(f"{year} DATA LENGTH :", len(doc_list))
         corpus, dictionary = self.build_doc_term_mat(doc_list)
         corpus_tfidf = self.build_corpus_tfidf(corpus)
         model = models.ldamodel.LdaModel(corpus_tfidf, num_topics=num_topics, id2word=dictionary, alpha=1, passes=passes)
