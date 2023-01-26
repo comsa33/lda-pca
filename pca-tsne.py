@@ -307,7 +307,7 @@ with tab1:
     
     model = get_model(df, company_name, year, col_dic[col])
 
-    col1_tab1, col2_tab1, col3_tab1, col4_tab1 = st.columns(4)
+    col1_tab1, col2_tab1 = st.columns(1, 3)
     with col1_tab1:
         dim_red = st.selectbox(
             '⁜ 차원 축소 기법을 선택하세요.',
@@ -317,7 +317,6 @@ with tab1:
             "⁜ 시각화 차원을 선택하세요.",
             ('2D', '3D')
             )
-    with col2_tab1:
         user_input = st.text_input(
             "⁜ 분석하고자 하는 단어를 입력하세요. 한 개 이상의 단어를 입력하려면 콤마(,)로 단어를 분리하세요.",
             ''
@@ -326,7 +325,6 @@ with tab1:
             '⁜ 입력 단어와 관련된 시각화에 보여줄 단어의 수를 선택하세요.',
             5, 200, (15)
         )
-    with col3_tab1:
         sample_n = st.slider(
             '⁜ 어떠한 단어도 입력하지 않았다면, 보여줄 샘플 단어의 수를 선택하세요.',
             5, 200, (15)
@@ -335,26 +333,25 @@ with tab1:
             "⁜ 주석을 키고 끌 수 있습니다.",
             ('On', 'Off')
         )
-    with col4_tab1:
-        if dim_red == 'TSNE':
-            perplexity = st.slider(
-                '⁜ TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
-                0, 50, (5)
-            )
+    if dim_red == 'TSNE':
+        perplexity = st.slider(
+            '⁜ TSNE모델 훈련을 위한 perplexity을 조정하십시오. perplexity는 매니폴드 학습 알고리즘에서 사용되는 가장 가까운 이웃의 수와 관련이 있습니다. 더 큰 데이터 세트에는 일반적으로 더 큰 perplexity이 필요합니다.',
+            0, 50, (5)
+        )
 
-            learning_rate = st.slider(
-                '⁜ TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
-                10, 1000, (200)
-            )
+        learning_rate = st.slider(
+            '⁜ TSNE모델 훈련을 위한 learning rate를 조정하십시오.',
+            10, 1000, (200)
+        )
 
-            iteration = st.slider(
-                '⁜ TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
-                250, 100000, (1000)
-            )
-        else:
-            perplexity = 0
-            learning_rate = 0
-            iteration = 0
+        iteration = st.slider(
+            '⁜ TSNE모델 훈련을 위한 iteration 수를 조정하십시오',
+            250, 100000, (1000)
+        )
+    else:
+        perplexity = 0
+        learning_rate = 0
+        iteration = 0
 
     if user_input == '':
         similar_word = None
@@ -374,7 +371,7 @@ with tab1:
         label_dict = dict([(y, x+1) for x, y in enumerate(set(labels))])
         color_map = [label_dict[x] for x in labels]
 
-    with st.container():
+    with col2_tab1:
         if dimension == '2D':
             st.subheader('2D 시각화')
             st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
@@ -384,7 +381,6 @@ with tab1:
             st.markdown('> 각 포인트에 대한 자세한 내용을 보려면(주석을 읽기 어려운 경우를 대비하여) 각 포인트 주변을 마우스로 가리키면 단어를 볼 수 있습니다. 시각화의 오른쪽 상단 모서리에 있는 확장 기호를 클릭하여 시각화를 확장할 수 있습니다.')
             display_scatterplot_3D(model, user_input, similar_word, labels, color_map, annotation, dim_red, perplexity, learning_rate, iteration, top_n, sample_n)
 
-    with st.container():
         st.subheader('각 입력에 대한 상위 5개의 가장 유사한 단어')
         count = 0
         for i in range(len(user_input)):
@@ -395,13 +391,12 @@ with tab1:
 
 with tab2:
     st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
-    col1_tab2, col2_tab2 = st.columns(2)
+    col1_tab2, col2_tab2 = st.columns(1, 3)
     with col1_tab2:
         num_topics = st.slider(
             '⁜ 토픽의 수를 설정하세요.',
             3, 10, (5)
         )
-    with col2_tab2:
         passes = st.slider(
             '⁜ LDA모델 훈련 횟수를 설정하세요.',
             1, 100, (50)
@@ -409,7 +404,7 @@ with tab2:
     lda = LDA_Model()
     lda_model, corpus, dictionary, doc_list = lda.get_lda_model(df, company_name, year, col_dic[col], num_topics, passes)
 
-    with st.container():
+    with col2_tab2:
         vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
         st.write(f"{year} {company_name} {col} 토픽 모델링 - LDA")
         html_string = pyLDAvis.prepared_data_to_html(vis)
@@ -417,12 +412,13 @@ with tab2:
 
 with tab3:
     st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
-    with st.container():
+    col1_tab3, col2_tab3 = st.columns(1, 3)
+    with col1_tab3:
         word_n = st.slider(
             '히트맵에 보여줄 단어의 수를 선택하세요.',
             5, 30, (15)
         )
-        height = word_n * 50
+        height = word_n * 53
 
     @st.experimental_memo
     def display_heatmap(df, company_name, col, word_n):
@@ -431,19 +427,18 @@ with tab3:
             df_join.iloc[:, 1:],
             text_auto=True,
             aspect="auto",
-            width=1000,
             height=height,
-            title=f"{year} {company_name} 연도별 TOP{word_n} 빈출 단어 히트맵"
         )
         plot_figure.update_xaxes(side="top")
         st.plotly_chart(plot_figure)
 
-    with st.container():
+    with col2_tab3:
+        st.markdown(=f"**{year} {company_name} 연도별 TOP{word_n} 빈출 단어 히트맵**")
         display_heatmap(df, company_name, col_dic[col], word_n)
 
 with tab4:
     st.subheader('연도별 평점 트렌드 분석 시각화를 위한 웹앱입니다.')
-    st.markdown(f'### {company_name}')
+    st.markdown(f'**[{company_name}]**')
     df_comp = funcs.get_comp(df, company_name)
     fields = ['Ratings', 'Culture', 'WorkLifeBalance', 'Benefits', 'Management', 'Opportunity']
     fields2 = ['Potential', 'Recommend']
