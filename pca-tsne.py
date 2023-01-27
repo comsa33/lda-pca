@@ -315,7 +315,7 @@ with tab1:
     
     model = get_model(df, company_name, year, col_dic[col])
 
-    col1_tab1, col2_tab1 = st.columns([1, 3])
+    col1_tab1, col2_tab1 = st.columns([1, 4])
     with col1_tab1:
         dim_red = st.selectbox(
             '⁜ 차원 축소 기법을 선택하세요.',
@@ -399,7 +399,7 @@ with tab1:
 
 with tab2:
     st.subheader('문서 내 토픽 모델링(LDA) 시각화를 위한 웹앱입니다.')
-    col1_tab2, col2_tab2 = st.columns([1, 3])
+    col1_tab2, col2_tab2 = st.columns([1, 4])
     with col1_tab2:
         num_topics = st.slider(
             '⁜ 토픽의 수를 설정하세요.',
@@ -420,7 +420,7 @@ with tab2:
 
 with tab3:
     st.subheader('어휘의 빈도에 따른 히트맵 시각화를 위한 웹앱입니다.')
-    col1_tab3, col2_tab3 = st.columns([1, 3])
+    col1_tab3, col2_tab3 = st.columns([1, 4])
     with col1_tab3:
         word_n = st.slider(
             '히트맵에 보여줄 단어의 수를 선택하세요.',
