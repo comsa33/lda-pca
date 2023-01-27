@@ -20,6 +20,14 @@ mpl.rcParams['axes.unicode_minus'] = False
 plt.rcParams["font.family"] = 'NanumGothic'
 
 
+st.set_page_config(
+    page_title="리뷰데이터 분석 대시보드",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="auto",
+)
+
+
 @st.experimental_memo
 def get_df():
     client = mongodb.client
